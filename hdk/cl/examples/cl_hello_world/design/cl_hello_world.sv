@@ -13,7 +13,7 @@
 // implied. See the License for the specific language governing permissions and
 // limitations under the License.
 
-`include pkg.sv
+`include "pkg.sv"
 import pkg::*;
 
 module cl_hello_world 
