@@ -262,6 +262,38 @@ always_ff @(posedge clk_main_a0)
       rresp  <= 0;
    end
 
+  logic bgn0;
+  logic fns0;
+  opcode opc0;
+  logic mode0;
+  logic [27:0] id0;
+  logic bgn1;
+  logic fns1;
+  opcode opc1;
+  logic mode1;
+  logic [27:0] id1;
+
+  snode nd (
+    .clk(clk_main_a0),
+    .rst(!rst_main_n_sync),
+ 
+    .bgn_in(bgn0),
+    .fns_out(fns0),
+    .opc_in(opc0),
+    .mode_in(mode0),
+    .id_in(id0),
+ 
+    .bgn_out(bgn1),
+    .fns_in(fns1),
+    .opc_out(opc1),
+    .mode_out(mode1),
+    .id_out(id1)
+  ); 
+
+  assign hello_world_q[31:29] = opc1;
+  assign hello_world_q[28] = mode1;
+  assign hello_world_q[27:0] = id1;
+
 //-------------------------------------------------
 // Hello World Register
 //-------------------------------------------------
@@ -269,13 +301,26 @@ always_ff @(posedge clk_main_a0)
 
 always_ff @(posedge clk_main_a0)
    if (!rst_main_n_sync) begin                    // Reset
-      hello_world_q[31:0] <= 32'h0000_0000;
+      bgn0 <= 0;
+      fns1 <= 0;
+      opc0 <= DEL;
+      mode0 <= 0;
+      id0 <= 0;
    end
    else if (wready & (wr_addr == `HELLO_WORLD_REG_ADDR)) begin  
-      hello_world_q[31:0] <= wdata[31:0];
+      bgn0 <= 1;
+      case (wdata[31:29])
+        3'b000 : opc0 <= DEL; 
+        3'b001 : opc0 <= ADD; 
+        3'b010 : opc0 <= SET; 
+        3'b011 : opc0 <= RDC; 
+        default: opc0 <= MSC;
+      endcase
+      mode0 <= wdata[28];
+      id0 <= wdata[27:0];
    end
    else begin                                // Hold Value
-      hello_world_q[31:0] <= hello_world_q[31:0];
+      // hello_world_q[31:0] <= hello_world_q[31:0];
    end
 
 assign hello_world_q_byte_swapped[31:0] = {hello_world_q[7:0],   hello_world_q[15:8],
@@ -427,7 +472,6 @@ always_ff @(posedge clk_main_a0)
       vi_cnt_ge_watermark = (vi_cnt >= vo_cnt_watermark_q);
       
    end // always @ (posedge clk_main_a0)
-   
 
    vio_0 CL_VIO_0 (
                    .clk    (clk_main_a0),
