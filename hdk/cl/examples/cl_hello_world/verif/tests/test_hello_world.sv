@@ -52,17 +52,17 @@ logic [15:0] vled_value;
       else
         $error ("TEST FAILED");
 
-      tb.peek_ocl(.addr(`VLED_REG_ADDR), .data(rdata));         // start read
-      $display ("Reading 0x%x from address 0x%x", rdata, `VLED_REG_ADDR);
-
-      if (rdata == 32'h5000_0007) // Check for LED register read
-        $display ("*** TEST PASSED ***");
-      else
-        $error ("*** TEST FAILED ***");
-
-      vled_value = tb.get_virtual_led();
-
-      $display ("value of vled:%0x", vled_value);
+      // tb.peek_ocl(.addr(`VLED_REG_ADDR), .data(rdata));         // start read
+      // $display ("Reading 0x%x from address 0x%x", rdata, `VLED_REG_ADDR);
+ 
+      // if (rdata == 32'h5000_0007) // Check for LED register read
+      //   $display ("*** TEST PASSED ***");
+      // else
+      //   $error ("*** TEST FAILED ***");
+ 
+      // vled_value = tb.get_virtual_led();
+ 
+      // $display ("value of vled:%0x", vled_value);
 
       tb.kernel_reset();
 
