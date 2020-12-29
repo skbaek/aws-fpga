@@ -240,6 +240,17 @@ always_ff @(posedge clk_main_a0)
 
 assign arready = !arvalid_q && !rvalid;
 
+logic wrm;
+logic wrs;
+opcode wop;
+logic wmo;
+logic [27:0] wid;
+logic rrm;
+logic rrs;
+opcode rod;
+logic rmo;
+logic [27:0] rid;
+
 // Read Response
 always_ff @(posedge clk_main_a0)
    if (!rst_main_n_sync)
@@ -272,17 +283,6 @@ always_ff @(posedge clk_main_a0)
         rdata[28:0] <= (wrs) ? 0 : 1;
       end 
    end
-
-  logic wrm;
-  logic wrs;
-  opcode wop;
-  logic wmo;
-  logic [27:0] wid;
-  logic rrm;
-  logic rrs;
-  opcode rod;
-  logic rmo;
-  logic [27:0] rid;
 
   snode nd (
     .clk(clk_main_a0),
@@ -330,7 +330,7 @@ always_ff @(posedge clk_main_a0)
         default: wop <= MSC;
       endcase
       wmo <= wdata[28];
-      widd <= wdata[27:0];
+      wid <= wdata[27:0];
       wrm <= 1;
    end
 
