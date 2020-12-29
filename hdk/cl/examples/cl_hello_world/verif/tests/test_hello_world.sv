@@ -35,7 +35,7 @@ initial begin
   
   tb.power_up();
 
-  `include "insts.sv"
+  `include "tb_insts.sv"
 
   tb.kernel_reset();
   tb.power_down();
