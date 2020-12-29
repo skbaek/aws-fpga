@@ -35,13 +35,13 @@ logic [15:0] vled_value;
 
       tb.power_up();
 
-      $display ("Writing < SET | 1 | 7 > to address 0x%x", `HELLO_WORLD_REG_ADDR);
-      tb.poke(.addr(`HELLO_WORLD_REG_ADDR), .data(32'h5000_0007), .id(AXI_ID), .size(DataSize::UINT16), .intf(AxiPort::PORT_OCL)); // write register
+      $display ("Writing < ADD | 1 | 7 >", `HELLO_WORLD_REG_ADDR);
+      tb.poke(.addr(`HELLO_WORLD_REG_ADDR), .data(32'b3000_0007), .id(AXI_ID), .size(DataSize::UINT16), .intf(AxiPort::PORT_OCL)); // write register
 
       tb.peek(.addr(`HELLO_WORLD_REG_ADDR), .data(rdata), .id(AXI_ID), .size(DataSize::UINT16), .intf(AxiPort::PORT_OCL));         // start read & write
-      $display ("Reading 0x%x from address 0x%x", rdata, `HELLO_WORLD_REG_ADDR);
+      $display ("Reading", rdata, `HELLO_WORLD_REG_ADDR);
 
-      if (rdata == 32'h0700_0050) // Check for byte swap in register read
+      if (rdata == 32'he000_0000) // Read value should be RDY
         $display ("TEST PASSED");
       else
         $error ("TEST FAILED");
