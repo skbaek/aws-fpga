@@ -23,6 +23,7 @@
 module test_hello_world();
 
 import tb_type_defines_pkg::*;
+import tb::*;
 //  `include "cl_common_defines.vh" // CL Defines with register addresses
 
 // AXI ID
