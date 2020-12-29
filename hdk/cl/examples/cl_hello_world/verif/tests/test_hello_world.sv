@@ -36,7 +36,7 @@ logic [15:0] vled_value;
       tb.power_up();
 
       $display ("Writing < ADD | 1 | 7 >", `HELLO_WORLD_REG_ADDR);
-      tb.poke(.addr(`HELLO_WORLD_REG_ADDR), .data(32'b3000_0007), .id(AXI_ID), .size(DataSize::UINT16), .intf(AxiPort::PORT_OCL)); // write register
+      tb.poke(.addr(`HELLO_WORLD_REG_ADDR), .data(32'h3000_0007), .id(AXI_ID), .size(DataSize::UINT16), .intf(AxiPort::PORT_OCL)); // write register
 
       tb.peek(.addr(`HELLO_WORLD_REG_ADDR), .data(rdata), .id(AXI_ID), .size(DataSize::UINT16), .intf(AxiPort::PORT_OCL));         // start read & write
       $display ("Reading", rdata, `HELLO_WORLD_REG_ADDR);
