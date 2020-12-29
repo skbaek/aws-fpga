@@ -21,7 +21,7 @@
 module test_hello_world();
 
 import tb_type_defines_pkg::*;
-`include "cl_common_defines.vh" // CL Defines with register addresses
+//  `include "cl_common_defines.vh" // CL Defines with register addresses
 
 // AXI ID
 parameter [5:0] AXI_ID = 6'h0;
@@ -36,7 +36,7 @@ initial begin
   tb.power_up();
 
   `include "insts.sv"
-  
+
   tb.kernel_reset();
   tb.power_down();
   $finish;
