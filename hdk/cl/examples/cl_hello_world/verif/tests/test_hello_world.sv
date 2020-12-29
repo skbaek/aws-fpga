@@ -31,26 +31,26 @@ logic [15:0] vdip_value;
 logic [15:0] vled_value;
 
 
-   initial begin
+initial begin
+  
+  tb.power_up();
 
-      tb.power_up();
-
-      $display ("Writing < ADD | 1 | 7 >", `HELLO_WORLD_REG_ADDR);
-      tb.poke(.addr(`HELLO_WORLD_REG_ADDR), .data(32'h3000_0007), .id(AXI_ID), .size(DataSize::UINT16), .intf(AxiPort::PORT_OCL)); // write register
-
-      tb.peek(.addr(`HELLO_WORLD_REG_ADDR), .data(rdata), .id(AXI_ID), .size(DataSize::UINT16), .intf(AxiPort::PORT_OCL));         // start read & write
-      $display ("Reading", rdata, `HELLO_WORLD_REG_ADDR);
-
-      if (rdata == 32'he000_0000) // Read value should be RDY
-        $display ("TEST PASSED");
-      else
-        $error ("TEST FAILED");
-
-      tb.kernel_reset();
-
-      tb.power_down();
-      
-      $finish;
-   end
+  `include "insts.sv"
+//
+//      $display ("Writing < ADD | 1 | 7 >", `HELLO_WORLD_REG_ADDR);
+//      tb.poke(.addr(`HELLO_WORLD_REG_ADDR), .data(32'h3000_0007), .id(AXI_ID), .size(DataSize::UINT16), .intf(AxiPort::PORT_OCL)); // write register
+//
+//      tb.peek(.addr(`HELLO_WORLD_REG_ADDR), .data(rdata), .id(AXI_ID), .size(DataSize::UINT16), .intf(AxiPort::PORT_OCL));         // start read & write
+//      $display ("Reading", rdata, `HELLO_WORLD_REG_ADDR);
+//
+//      if (rdata == 32'he000_0000) // Read value should be RDY
+//        $display ("TEST PASSED");
+//      else
+//        $error ("TEST FAILED");
+//
+  tb.kernel_reset();
+  tb.power_down();
+  $finish;
+end
 
 endmodule // test_hello_world
