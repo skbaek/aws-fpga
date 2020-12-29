@@ -18,7 +18,7 @@
 // if the upper word of the CL register is written to Vdip
 //-------------------------------------------------------------------------------
 
-`include "pkg.sv"
+`include "../../design/pkg.sv"
 
 module test_hello_world();
 
