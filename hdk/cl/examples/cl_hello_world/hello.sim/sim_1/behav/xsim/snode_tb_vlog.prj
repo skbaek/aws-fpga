@@ -1,0 +1,13 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  \
+"../../../../design/pkg.sv" \
+"../../../../design/reader.sv" \
+"../../../../design/snode.sv" \
+"../../../../design/writer.sv" \
+"../../../../hello.srcs/sim_1/new/snode_tb.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

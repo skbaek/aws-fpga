@@ -53,10 +53,6 @@ logic rst_main_n_sync;
 //-------------------------------------------------
   logic        arvalid_q;
   logic [31:0] araddr_q;
-  logic [15:0] vled_q;
-  logic [15:0] pre_cl_sh_status_vled;
-  logic [15:0] sh_cl_status_vdip_q;
-  logic [15:0] sh_cl_status_vdip_q2;
   logic [31:0] hello_world_q;
 
 //-------------------------------------------------
@@ -64,6 +60,7 @@ logic rst_main_n_sync;
 //-------------------------------------------------
   assign cl_sh_id0[31:0] = `CL_SH_ID0;
   assign cl_sh_id1[31:0] = `CL_SH_ID1;
+
 
 //-------------------------------------------------
 // Reset Synchronization
@@ -177,6 +174,8 @@ always_ff @(negedge rst_main_n or posedge clk_main_a0)
    logic        rvalid;
    logic [31:0] rdata;
    logic [1:0]  rresp;
+   
+   logic outbound;
 
    // Inputs
    assign awvalid         = sh_ocl_awvalid_q;
@@ -258,43 +257,50 @@ always_ff @(posedge clk_main_a0)
    else if (arvalid_q) 
    begin
       rvalid <= 1;
-      rdata  <= (araddr_q == `HELLO_WORLD_REG_ADDR) ? hello_world_q[31:0]:
-                (araddr_q == `VLED_REG_ADDR       ) ? {16'b0,vled_q[15:0]            }:
-                                                      `UNIMPLEMENTED_REG_VALUE        ;
       rresp  <= 0;
+      if (rrs) begin
+        rdata[31:29] <= 
+          (rop == DEL) ? 0 : 
+          (rop == ADD) ? 1 : 
+          (rop == SET) ? 2 : 
+          (rop == RDC) ? 3 : 7;
+        rdata[28] <= rmo;
+        rdata[27:0] <= rid;
+        rrm <= 1;
+      end else begin 
+        rdata[31:29] <= 7;
+        rdata[28:0] <= (wrs) ? 0 : 1;
+      end 
    end
 
-  logic bgn0;
-  logic fns0;
-  opcode opc0;
-  logic mode0;
-  logic [27:0] id0;
-  logic bgn1;
-  logic fns1;
-  opcode opc1;
-  logic mode1;
-  logic [27:0] id1;
+  logic wrm;
+  logic wrs;
+  opcode wop;
+  logic wmo;
+  logic [27:0] wid;
+  logic rrm;
+  logic rrs;
+  opcode rod;
+  logic rmo;
+  logic [27:0] rid;
 
   snode nd (
     .clk(clk_main_a0),
     .rst(!rst_main_n_sync),
- 
-    .bgn_in(bgn0),
-    .fns_out(fns0),
-    .opc_in(opc0),
-    .mode_in(mode0),
-    .id_in(id0),
- 
-    .bgn_out(bgn1),
-    .fns_in(fns1),
-    .opc_out(opc1),
-    .mode_out(mode1),
-    .id_out(id1)
-  ); 
 
-  assign hello_world_q[31:29] = opc1;
-  assign hello_world_q[28] = mode1;
-  assign hello_world_q[27:0] = id1;
+    .wrm(wrm),
+    .wrs(wrs),
+    .wop(wop),
+    .wmo(wmo),
+    .wid(wid),
+
+    .rrm(rrm),
+    .rrs(rrs),
+    .rop(rop),
+    .rmo(rmo),
+    .rid(rid)
+  );
+
 
 //-------------------------------------------------
 // Hello World Register
@@ -302,61 +308,31 @@ always_ff @(posedge clk_main_a0)
 // When read it, returns the byte-flipped value.
 
 always_ff @(posedge clk_main_a0)
+  if (wrm) wrm <= 0; 
+
+always_ff @(posedge clk_main_a0)
+  if (rrm) rrm <= 0; 
+
+always_ff @(posedge clk_main_a0)
    if (!rst_main_n_sync) begin                    // Reset
-      bgn0 <= 0;
-      fns1 <= 0;
-      opc0 <= DEL;
-      mode0 <= 0;
-      id0 <= 0;
+      wrm <= 0;
+      rrm <= 0;
+      wop <= DEL;
+      wmo <= 0;
+      wid <= 0;
    end
    else if (wready & (wr_addr == `HELLO_WORLD_REG_ADDR)) begin  
-      bgn0 <= 1;
       case (wdata[31:29])
-        3'b000 : opc0 <= DEL; 
-        3'b001 : opc0 <= ADD; 
-        3'b010 : opc0 <= SET; 
-        3'b011 : opc0 <= RDC; 
-        default: opc0 <= MSC;
+        3'b000 : wop <= DEL; 
+        3'b001 : wop <= ADD; 
+        3'b010 : wop <= SET; 
+        3'b011 : wop <= RDC; 
+        default: wop <= MSC;
       endcase
-      mode0 <= wdata[28];
-      id0 <= wdata[27:0];
+      wmo <= wdata[28];
+      widd <= wdata[27:0];
+      wrm <= 1;
    end
-   else begin                                // Hold Value
-     hello_world_q[31:0] <= hello_world_q[31:0];
-   end
-
-//-------------------------------------------------
-// Virtual LED Register
-//-------------------------------------------------
-// Flop/synchronize interface signals
-always_ff @(posedge clk_main_a0)
-   if (!rst_main_n_sync) begin                    // Reset
-      sh_cl_status_vdip_q[15:0]  <= 16'h0000;
-      sh_cl_status_vdip_q2[15:0] <= 16'h0000;
-      cl_sh_status_vled[15:0]    <= 16'h0000;
-   end
-   else begin
-      sh_cl_status_vdip_q[15:0]  <= sh_cl_status_vdip[15:0];
-      sh_cl_status_vdip_q2[15:0] <= sh_cl_status_vdip_q[15:0];
-      cl_sh_status_vled[15:0]    <= pre_cl_sh_status_vled[15:0];
-   end
-
-// The register contains 16 read-only bits corresponding to 16 LED's.
-// For this example, the virtual LED register shadows the hello_world
-// register.
-// The same LED values can be read from the CL to Shell interface
-// by using the linux FPGA tool: $ fpga-get-virtual-led -S 0
-
-always_ff @(posedge clk_main_a0)
-   if (!rst_main_n_sync) begin                    // Reset
-      vled_q[15:0] <= 16'h0000;
-   end
-   else begin
-      vled_q[15:0] <= hello_world_q[15:0];
-   end
-
-// The Virtual LED outputs will be masked with the Virtual DIP switches.
-assign pre_cl_sh_status_vled[15:0] = vled_q[15:0] & sh_cl_status_vdip_q2[15:0];
 
 //-------------------------------------------
 // Tie-Off Unused Global Signals
@@ -364,7 +340,10 @@ assign pre_cl_sh_status_vled[15:0] = vled_q[15:0] & sh_cl_status_vdip_q2[15:0];
 // The functionality for these signals is TBD so they can can be tied-off.
   assign cl_sh_status0[31:0] = 32'h0;
   assign cl_sh_status1[31:0] = 32'h0;
+  assign cl_sh_status_vled[15:0] = 16'h0000;
+  assign sh_cl_status_vdip[15:0] = 16'h0000;
 
+/*
 //-----------------------------------------------
 // Debug bridge, used if need Virtual JTAG
 //-----------------------------------------------
@@ -503,6 +482,8 @@ always_ff @(posedge clk_main_a0)
                    );
    
 `endif //  `ifndef DISABLE_VJTAG_DEBUG
+
+*/
 
 endmodule
 

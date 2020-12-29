@@ -1,0 +1,11 @@
+0.7
+2020.2
+Nov 18 2020
+09:47:47
+C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/design/insts.sv,1609221942,verilog,,,,,,,,,,,,
+C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/design/pkg.sv,1609217205,systemVerilog,C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/design/reader.sv;C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/design/snode.sv;C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/design/writer.sv;C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/hello.srcs/sim_1/new/snode_tb.sv,C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/design/reader.sv,,$unit_pkg_sv;pkg,,uvm,,,,,,
+C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/design/reader.sv,1609145424,systemVerilog,,C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/design/snode.sv,,reader,,uvm,,,,,,
+C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/design/snode.sv,1609222151,systemVerilog,,C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/design/writer.sv,,snode,,uvm,,,,,,
+C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/design/writer.sv,1609219738,systemVerilog,,C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/hello.srcs/sim_1/new/snode_tb.sv,C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/design/insts.sv,writer,,uvm,,,,,,
+C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/hello.sim/sim_1/behav/xsim/glbl.v,1605673889,verilog,,,,glbl,,uvm,,,,,,
+C:/Users/seulk/projects/aws-fpga/hdk/cl/examples/cl_hello_world/hello.srcs/sim_1/new/snode_tb.sv,1609217444,systemVerilog,,,,snode_tb,,uvm,,,,,,
