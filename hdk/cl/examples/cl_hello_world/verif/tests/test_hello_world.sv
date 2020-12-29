@@ -18,6 +18,8 @@
 // if the upper word of the CL register is written to Vdip
 //-------------------------------------------------------------------------------
 
+`include "pkg.sv"
+
 module test_hello_world();
 
 import tb_type_defines_pkg::*;
