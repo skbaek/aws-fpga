@@ -1,5 +1,7 @@
 package pkg ;
 
+`define DEFAULT_REG_ADDR    32'h0000_0500
+
 parameter OPC_SZ = 3;
 parameter ID_SZ = 28;
 parameter BUD_WID = 32;
